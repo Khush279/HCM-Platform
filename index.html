@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HCM Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <ul>
+        <li class="active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</li>
+        <li data-section="employeeManagement"><i class="fas fa-user"></i> Employee Management</li>
+        <li data-section="payroll"><i class="fas fa-money-bill-wave"></i> Payroll</li>
+        <li data-section="benefits"><i class="fas fa-shield-alt"></i> Benefits</li>
+        <li data-section="timeAttendance"><i class="fas fa-clock"></i> Time & Attendance</li>
+        <li data-section="reports"><i class="fas fa-chart-line"></i> Reports</li>
+        <li data-section="settings"><i class="fas fa-cog"></i> Settings</li>
+      </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+      <!-- Dashboard Section -->
+      <section id="dashboard" class="active-section">
+        <h1>Dashboard Overview</h1>
+        <!-- Header Metrics -->
+        <div class="metrics">
+          <div class="metric">
+            <h2>Total Employees</h2>
+            <p id="totalEmployees">0</p>
+          </div>
+          <div class="metric">
+            <h2>Upcoming Payroll</h2>
+            <p id="upcomingPayroll">N/A</p>
+          </div>
+          <div class="metric">
+            <h2>Active Benefits</h2>
+            <p id="activeBenefits">0</p>
+          </div>
+          <div class="metric">
+            <h2>Leave Requests</h2>
+            <p id="leaveRequests">0</p>
+          </div>
+        </div>
+        <!-- Charts and Graphs -->
+        <div class="charts">
+          <div class="chart">
+            <h3>Employee Growth Chart</h3>
+            <canvas id="employeeGrowthChart"></canvas>
+          </div>
+          <div class="chart">
+            <h3>Attendance Trends</h3>
+            <canvas id="attendanceTrendsChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Employee Management Section -->
+      <section id="employeeManagement" class="hidden-section">
+        <h1>Employee Management</h1>
+        <!-- Search and Filter Bar -->
+        <div class="search-filter">
+          <input type="text" id="employeeSearch" placeholder="Search employees...">
+          <select id="departmentFilter">
+            <option value="">All Departments</option>
+            <!-- Departments will be populated dynamically -->
+          </select>
+          <select id="roleFilter">
+            <option value="">All Roles</option>
+            <!-- Roles will be populated dynamically -->
+          </select>
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="on leave">On Leave</option>
+          </select>
+          <button id="addEmployeeBtn">Add Employee</button>
+        </div>
+        <!-- Employee List View -->
+        <table class="employee-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="employeeTableBody">
+            <!-- Employee rows will be populated dynamically -->
+          </tbody>
+        </table>
+        <!-- Profile Preview -->
+        <div class="profile-preview hidden">
+          <button class="close-btn" id="closeProfilePreview">&times;</button>
+          <h2 id="profileName">Employee Name</h2>
+          <p><strong>Contact:</strong> <span id="profileContact"></span></p>
+          <p><strong>Position:</strong> <span id="profilePosition"></span></p>
+          <h3>Job History</h3>
+          <ul id="jobHistoryList">
+            <!-- Job history will be populated dynamically -->
+          </ul>
+          <h3>Benefits Enrollment</h3>
+          <p id="benefitsEnrollment">N/A</p>
+        </div>
+        <!-- Add/Edit Employee Modal -->
+        <div class="modal hidden" id="employeeModal">
+          <div class="modal-content">
+            <span class="close-modal" id="closeEmployeeModal">&times;</span>
+            <h2 id="employeeModalTitle">Add Employee</h2>
+            <form id="employeeForm">
+              <label for="employeeName">Name:</label>
+              <input type="text" id="employeeName" required>
+              <label for="employeePosition">Position:</label>
+              <input type="text" id="employeePosition" required>
+              <label for="employeeDepartment">Department:</label>
+              <input type="text" id="employeeDepartment" required>
+              <label for="employeeStatus">Status:</label>
+              <select id="employeeStatus">
+                <option value="active">Active</option>
+                <option value="on leave">On Leave</option>
+              </select>
+              <label for="employeeContact">Contact:</label>
+              <input type="email" id="employeeContact" required>
+              <label for="employeeBenefits">Benefits:</label>
+              <input type="text" id="employeeBenefits">
+              <button type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Payroll Section -->
+      <section id="payroll" class="hidden-section">
+        <h1>Payroll Module</h1>
+        <!-- Payroll Overview -->
+        <div class="payroll-overview">
+          <h2>Recent Payroll Runs</h2>
+          <table class="payroll-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="payrollTableBody">
+              <!-- Payroll records will be populated dynamically -->
+            </tbody>
+          </table>
+          <h2>Next Scheduled Payroll</h2>
+          <p id="nextPayrollDate">N/A</p>
+        </div>
+        <!-- Payroll Actions -->
+        <div class="payroll-actions">
+          <button id="addPayrollBtn">Add Payroll Record</button>
+          <button id="adjustPayrollSchedule">Adjust Payroll Schedule</button>
+          <button id="updateTaxSettings">Tax Settings</button>
+        </div>
+        <!-- Add Payroll Modal -->
+        <div class="modal hidden" id="payrollModal">
+          <div class="modal-content">
+            <span class="close-modal" id="closePayrollModal">&times;</span>
+            <h2>Add Payroll Record</h2>
+            <form id="payrollForm">
+              <label for="payrollDate">Date:</label>
+              <input type="date" id="payrollDate" required>
+              <label for="payrollStatus">Status:</label>
+              <select id="payrollStatus">
+                <option value="Processed">Processed</option>
+                <option value="Pending">Pending</option>
+              </select>
+              <label for="payrollAmount">Total Amount:</label>
+              <input type="number" id="payrollAmount" required>
+              <button type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Benefits Section -->
+      <section id="benefits" class="hidden-section">
+        <h1>Benefits Module</h1>
+        <!-- Benefits Overview -->
+        <div class="benefits-overview">
+          <h2>Available Plans</h2>
+          <ul id="benefitsPlanList">
+            <!-- Benefit plans will be populated dynamically -->
+          </ul>
+          <button id="addBenefitPlanBtn">Add Benefit Plan</button>
+          <h2>Enrollment Status</h2>
+          <p>Total Enrolled: <span id="totalEnrolled">0</span></p>
+          <p>Pending Enrollments: <span id="pendingEnrollments">0</span></p>
+        </div>
+        <!-- Plan Management -->
+        <div class="plan-management">
+          <h2>Eligibility Requirements</h2>
+          <p id="eligibilityRequirements">N/A</p>
+          <button id="manageEnrollments">Manage Enrollments</button>
+        </div>
+        <!-- Add Benefit Plan Modal -->
+        <div class="modal hidden" id="benefitPlanModal">
+          <div class="modal-content">
+            <span class="close-modal" id="closeBenefitPlanModal">&times;</span>
+            <h2>Add Benefit Plan</h2>
+            <form id="benefitPlanForm">
+              <label for="benefitPlanName">Plan Name:</label>
+              <input type="text" id="benefitPlanName" required>
+              <label for="benefitPlanDescription">Description:</label>
+              <textarea id="benefitPlanDescription" required></textarea>
+              <button type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Time & Attendance Section -->
+      <section id="timeAttendance" class="hidden-section">
+        <h1>Time & Attendance Module</h1>
+        <!-- Time Tracking Dashboard -->
+        <div class="time-tracking">
+          <h2>Weekly Timesheets</h2>
+          <table class="timesheet-table">
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Hours Logged</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="timesheetTableBody">
+              <!-- Timesheet records will be populated dynamically -->
+            </tbody>
+          </table>
+          <button id="addTimeEntryBtn">Add Time Entry</button>
+          <h2>Clock-in/Clock-out Times</h2>
+          <p id="clockInOutSummary">N/A</p>
+        </div>
+        <!-- Shift and Leave Management -->
+        <div class="shift-leave-management">
+          <h2>Shift Schedules</h2>
+          <!-- Calendar or schedule view can be added here -->
+          <h2>Leave Requests</h2>
+          <ul id="leaveRequestsList">
+            <!-- Leave requests will be populated dynamically -->
+          </ul>
+          <h2>Overtime Approvals</h2>
+          <ul id="overtimeApprovalsList">
+            <!-- Overtime approvals will be populated dynamically -->
+          </ul>
+        </div>
+        <!-- Add Time Entry Modal -->
+        <div class="modal hidden" id="timeEntryModal">
+          <div class="modal-content">
+            <span class="close-modal" id="closeTimeEntryModal">&times;</span>
+            <h2>Add Time Entry</h2>
+            <form id="timeEntryForm">
+              <label for="timeEntryEmployee">Employee:</label>
+              <select id="timeEntryEmployee">
+                <!-- Employee options will be populated dynamically -->
+              </select>
+              <label for="timeEntryHours">Hours Logged:</label>
+              <input type="number" id="timeEntryHours" required>
+              <button type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reports Section -->
+      <section id="reports" class="hidden-section">
+        <h1>Reports</h1>
+        <!-- Reports Dashboard -->
+        <div class="reports-dashboard">
+          <h2>Payroll Costs</h2>
+          <canvas id="payrollCostsChart"></canvas>
+          <h2>Attendance Records</h2>
+          <canvas id="attendanceRecordsChart"></canvas>
+          <h2>Employee Satisfaction Scores</h2>
+          <canvas id="satisfactionScoresChart"></canvas>
+        </div>
+        <!-- Report Generation Options -->
+        <div class="report-generation">
+          <h2>Generate Custom Report</h2>
+          <form id="reportForm">
+            <label for="reportType">Report Type:</label>
+            <select id="reportType">
+              <option value="payroll">Payroll</option>
+              <option value="attendance">Attendance</option>
+              <option value="benefits">Benefits</option>
+            </select>
+            <label for="dateRange">Date Range:</label>
+            <input type="date" id="startDate"> to <input type="date" id="endDate">
+            <button type="submit">Generate Report</button>
+          </form>
+          <button id="downloadReport">Download</button>
+          <button id="printReport">Print</button>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settings" class="hidden-section">
+        <h1>Settings</h1>
+        <!-- Settings Options -->
+        <div class="settings-options">
+          <h2>User Permissions</h2>
+          <!-- User permissions settings can be added here -->
+          <h2>System Configuration</h2>
+          <!-- System configuration settings can be added here -->
+          <h2>Integrations</h2>
+          <!-- Integration options can be added here -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- JavaScript File -->
+  <script src="script.js"></script>
+</body>
+</html>
